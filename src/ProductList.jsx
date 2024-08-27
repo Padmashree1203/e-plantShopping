@@ -249,22 +249,8 @@ const handlePlantsClick = (e) => {
 };
 const dispatch = useDispatch();
 
-const Navbar = () => {
-    // Access the total quantity from the Redux store
-    const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-
-    return (
-        <nav>
-            <h1>Plant Shop</h1>
-            <div className="cart-icon">
-                <img src="cart-icon.png" alt="Cart" />
-                <span className="cart-count">{totalQuantity}</span>
-            </div>
-        </nav>
-    );
-};
-
 const handleAddToCart = (plant) => {
+    const CartItem = { ...product, quantity: 1 };
     // Dispatch the plant details to the cart
     dispatch(addItem(plant));
 
@@ -274,6 +260,11 @@ const handleAddToCart = (plant) => {
         [plant.name]: true
     }));
 };
+
+// Get the total number of items in the cart
+const totalQuantity = useSelector(state => 
+    state.cart.cartItems.reduce((total, item) => total + item.quantity, 0)
+);
 
    const handleContinueShopping = (e) => {
     e.preventDefault();
