@@ -241,12 +241,28 @@ function ProductList() {
     e.preventDefault();
     setShowCart(true); // Set showCart to true when cart icon is clicked
 };
+
 const handlePlantsClick = (e) => {
     e.preventDefault();
     setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
     setShowCart(false); // Hide the cart when navigating to About Us
 };
 const dispatch = useDispatch();
+
+const Navbar = () => {
+    // Access the total quantity from the Redux store
+    const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+
+    return (
+        <nav>
+            <h1>Plant Shop</h1>
+            <div className="cart-icon">
+                <img src="cart-icon.png" alt="Cart" />
+                <span className="cart-count">{totalQuantity}</span>
+            </div>
+        </nav>
+    );
+};
 
 const handleAddToCart = (plant) => {
     // Dispatch the plant details to the cart
@@ -261,7 +277,7 @@ const handleAddToCart = (plant) => {
 
    const handleContinueShopping = (e) => {
     e.preventDefault();
-    setShowCart(false);
+    setShowCart(true);
   };
     return (
         <div>

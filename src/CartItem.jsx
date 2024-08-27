@@ -8,25 +8,36 @@ const CartItem = ({ onContinueShopping }) => {
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
+  const calculateTotalAmount = (cartItems) => {
+    return cartItems.reduce((total, currentItem) => {
+        return total + currentItem.price * currentItem.quantity;
+    }, 0);
  
+
   };
 
   const handleContinueShopping = (e) => {
+    onContinueShopping(); // Call the function passed from the parent component to continue shopping
    
   };
 
 
 
   const handleIncrement = (item) => {
+    dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
+
   };
 
   const handleDecrement = (item) => {
-   
+   if (item.quantity > 1) {
+            dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
+        } else {
+            dispatch(removeItem(item.id));
+        }
   };
 
-  const handleRemoveItem = (itemName) => {
-    dispatch(removeItem(itemName));
+  const handleRemove = () => {
+    dispatch(removeItem(item.id));
   };
   
   const handleUpdateQuantity = (itemName, newQuantity) => {
@@ -34,11 +45,12 @@ const CartItem = ({ onContinueShopping }) => {
   };
 
   // Calculate total cost based on quantity for an item
-  const calculateTotalCost = (item) => {
+  const calculateTotalCost = () => {
+    return item.price * item.quantity;
   };
 
   return (
-    <div className="cart-container">
+    <div className="cart-item">
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
       <div>
         {cart.map(item => (
@@ -49,6 +61,7 @@ const CartItem = ({ onContinueShopping }) => {
               <div className="cart-item-cost">{item.cost}</div>
               <div className="cart-item-quantity">
                 <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
+          
                 <span className="cart-item-quantity-value">{item.quantity}</span>
                 <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
               </div>
