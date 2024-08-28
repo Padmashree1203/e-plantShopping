@@ -1,39 +1,44 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  cartItems: [],
-  totalQuantity: 0, // Add this line to keep track of the total quantity
-};
+const updateTotalQuantity = (items) => {
 
-const CartSlice = createSlice({
+    let totalQuantity = 0;
+    items.forEach( (item) => {
+        totalQuantity += item.quantity;
+    });
+
+    return totalQuantity;
+}
+
+export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [], // Initialize items as an empty array
+    totalItemsQuantity: 0
   },
   reducers: {
     addItem: (state, action) => {
-      const plant = action.payload;
-      const existingItem = state.items.find(item => item.name === plant.name);
+        const { name, image, cost } = action.payload;
+        const existingItem = state.items.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            state.items.push({ name, image, cost, quantity: 1});
+        }
 
-      if (existingItem) {
-        // If the item is already in the cart, increase the quantity
-        existingItem.quantity += 1;
-      } else {
-        // If it's a new item, add it to the cart with a quantity of 1
-        state.items.push({ ...plant, quantity: 1 });
-      }
-    
+        state.totalItemsQuantity = updateTotalQuantity(state.items);
     },
     removeItem: (state, action) => {
-      const plantName = action.payload;
-  state.items = state.items.filter(item => item.name !== plantName);
+        state.items = state.items.filter(item => item.name !== action.payload);
+        state.totalItemsQuantity = updateTotalQuantity(state.items);
     },
     updateQuantity: (state, action) => {
-      const { name, quantity } = action.payload;
-  const item = state.items.find(item => item.name === name);
-  if (item) {
-    item.quantity = quantity;
-  }
+        const { name, quantity} = action.payload;
+        const itemToUpdate = state.items.find(item => item.name === name);
+        if(itemToUpdate) {
+            itemToUpdate.quantity = quantity;
+            state.totalItemsQuantity = updateTotalQuantity(state.items);
+        }
     },
   },
 });
